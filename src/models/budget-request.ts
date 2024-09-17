@@ -1,7 +1,8 @@
 export interface BudgetRequest {
-    id: number
-    title: string
-    quantity: number
-    amount: number
-    status: 'PENDING' | "APPROVED" | "REJECTED"
+    id: number;
+    title: string;
+    amount: number;
+    quantity: number;
+    status: "PENDING" | "APPROVED" | "REJECTED";
+    owner_id: number
 }

@@ -1,107 +1,41 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useState } from "react";
-import BudgetPanel from "@/components/BudgetPanel";
-import BudgetRequestDataTable from "../components/BudgetRequestDataTable";
-import Header from "@/components/Header";
-import { BudgetRequest } from "@/models/budget-request";
+import { useEffect, useState } from "react";
+import BudgetPanel from "@/components/Panel/BudgetPanel";
+import BudgetRequestDataTable from "@/components/BudgetRequestDataTable";
+import { fetchBudgetItems } from "@/services/budget-item";
+import { useBudget } from "@/context/BudgetContext"; // Import the hook
 
-let nextId = 3;
 function Home() {
-  const [budgetRequests, setBudgetRequests] = useState<BudgetRequest[]>([
-    {
-      id: 1,
-      title: "Monitor",
-      amount: 100,
-      quantity: 1,
-      status: "PENDING",
-    },
-    {
-      id: 2,
-      title: "Ram",
-      amount: 200,
-      quantity: 1,
-      status: "APPROVED",
-    },
-    // {
-    //   id: 3,
-    //   title: "CPU",
-    //   amount: 300,
-    //   quantity: 1,
-    //   status: "APPROVED",
-    // },
-  ]);
-  const addRequest = (newRequest: BudgetRequest) => {
-    setBudgetRequests([...budgetRequests, newRequest]);
-  };
+	const { budgetRequests, setBudgetRequests } = useBudget(); // Use context hook
+	const [error, setError] = useState<string | null>(null);
 
-  return (
-    <div>
-      <Header />
-      <main className="container mx-auto">
-        <div className="mt-4">
-          <BudgetPanel items={budgetRequests} />
-        </div>
-        <FormAddRequest addRequest={addRequest} />
-        <div className="mt-4">
-          <BudgetRequestDataTable items={budgetRequests} />
-        </div>
-      </main>
-    </div>
-  );
-}
-interface FormAddRequestProps {
-  addRequest(request: BudgetRequest): void;
-}
-// FormAddRequest.tsx
-function FormAddRequest(props: FormAddRequestProps) {
-  const [newRequest, setNewRequest] = useState<BudgetRequest>({
-    id: 0,
-    title: "",
-    amount: 0,
-    quantity: 1,
-    status: "APPROVED",
-  });
+	const loadItems = async () => {
+		try {
+			const items = await fetchBudgetItems();
+			setBudgetRequests(items); // Update context
+		} catch (err) {
+			setError("Failed to fetch budget items.");
+		}
+	};
 
-  const updateField = (event: ChangeEvent<HTMLInputElement>) => {
-    const value =
-      event.target.type === "number"
-        ? Number(event.target.value)
-        : event.target.value;
-    setNewRequest({
-      ...newRequest,
-      [event.target.name]: value,
-    });
-  };
+	useEffect(() => {
+		loadItems();
+	}, [setBudgetRequests]); // Add setBudgetRequests to dependency array
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    props.addRequest({
-      id: nextId++,
-      title: newRequest.title,
-      amount: newRequest.amount,
-      quantity: 1,
-      status: "APPROVED",
-    });
-  };
-  return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        Title:
-        <input name="title" value={newRequest.title} onChange={updateField} />
-      </div>
-      <div>
-        Amount:
-        <input
-          name="amount"
-          type="number"
-          value={newRequest.amount}
-          onChange={updateField}
-        />
-      </div>
-      <button>Add</button>
-    </form>
-  );
+	return (
+		<div>
+			<main className="container mx-auto">
+				{error && <p className="text-red-500">{error}</p>}
+				<div className="mt-4">
+					<BudgetPanel items={budgetRequests} />
+				</div>
+				<div className="mt-4">
+					<BudgetRequestDataTable items={budgetRequests} />
+				</div>
+			</main>
+		</div>
+	);
 }
 
 export default Home;
