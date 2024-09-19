@@ -25,9 +25,9 @@ function BudgetPanel({ items }: BudgetPanelProps) {
 		.reduce((sum, amount) => sum + amount, 0);
 
 	const budgetData = [
-		{ title: "Total Budget", value: total, bgColor: "#0070f3" }, // Blue background for Total Budget
-		{ title: "Used Budget", value: usedBudget, bgColor: "#f6c1cc" }, // Soft green for Used Budget
-		{ title: "Balance", value: total - usedBudget, bgColor: "#28a745" }, // Soft pink for Balance
+		{ title: "Total Budget", value: total, bgColor: "#0070f3" },
+		{ title: "Used Budget", value: usedBudget, bgColor: "#f6c1cc" },
+		{ title: "Balance", value: total - usedBudget, bgColor: "#28a745" },
 	];
 
 	return (

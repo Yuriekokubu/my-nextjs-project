@@ -7,7 +7,7 @@ import { BudgetRequest } from "@/models/budget-request";
 interface BudgetContextType {
 	budgetRequests: BudgetRequest[];
 	setBudgetRequests: React.Dispatch<React.SetStateAction<BudgetRequest[]>>;
-	refreshBudgetRequests: () => void; // Function to refresh the data
+	refreshBudgetRequests: () => void; 
 }
 
 const BudgetContext = createContext<BudgetContextType | undefined>(undefined);
@@ -15,7 +15,6 @@ const BudgetContext = createContext<BudgetContextType | undefined>(undefined);
 export function BudgetProvider({ children }: { children: ReactNode }) {
 	const [budgetRequests, setBudgetRequests] = useState<BudgetRequest[]>([]);
 
-	// Fetch budget items and update the state
 	const fetchAndUpdateBudgetRequests = useCallback(async () => {
 		try {
 			const items = await fetchBudgetItems();
@@ -23,14 +22,12 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
 		} catch (error) {
 			console.error("Error fetching budget requests:", error);
 		}
-	}, []); // useCallback ensures this function is only created once
+	}, []); 
 
-	// Fetch data when the provider mounts
 	useEffect(() => {
 		fetchAndUpdateBudgetRequests();
-	}, [fetchAndUpdateBudgetRequests]); // Depend on the memoized function
+	}, [fetchAndUpdateBudgetRequests]); 
 
-	// Function to refresh the data
 	const refreshBudgetRequests = useCallback(() => {
 		fetchAndUpdateBudgetRequests();
 	}, [fetchAndUpdateBudgetRequests]);

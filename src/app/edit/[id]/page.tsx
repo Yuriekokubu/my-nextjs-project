@@ -12,8 +12,8 @@ type FormData = {
 };
 
 function EditBudgetRequest() {
-	const { id } = useParams(); // Use useParams to get the ID from the URL
-	const router = useRouter(); // Use useRouter for redirection
+	const { id } = useParams();
+	const router = useRouter();
 
 	const {
 		register,
@@ -28,7 +28,6 @@ function EditBudgetRequest() {
 		},
 	});
 
-	// Fetch the item by ID when the page loads
 	useEffect(() => {
 		const fetchItemByID = async () => {
 			try {
@@ -36,7 +35,6 @@ function EditBudgetRequest() {
 					const response = await fetch(`http://localhost:2024/items/${id}`);
 					const data = await response.json();
 
-					// Set the form values with the fetched data
 					setValue("title", data.title);
 					setValue("quantity", data.quantity);
 					setValue("amount", data.amount);
@@ -49,31 +47,27 @@ function EditBudgetRequest() {
 		fetchItemByID();
 	}, [id, setValue]);
 
-	// Handle form submission
 	const onSubmit = async (data: FormData) => {
 		try {
 			if (id) {
 				console.log("Submitting data:", {
 					title: data.title,
-					quantity: Number(data.quantity), // Ensure quantity is a number
-					amount: Number(data.amount), // Ensure amount is a number
+					quantity: Number(data.quantity),
+					amount: Number(data.amount),
 				});
 
 				await editBudgetItem(Number(id), {
 					title: data.title,
-					quantity: Number(data.quantity), // Ensure quantity is a number
-					amount: Number(data.amount), // Ensure amount is a number
+					quantity: Number(data.quantity),
+					amount: Number(data.amount),
 				});
 
-				// Show success alert
 				alert("Budget item updated successfully!");
 
-				// Redirect to the home page
 				router.push("/");
 			}
 		} catch (error) {
 			console.error("Error updating item:", error);
-			// Optionally provide feedback to the user
 		}
 	};
 

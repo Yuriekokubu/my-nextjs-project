@@ -1,61 +1,9 @@
 import { useState } from "react";
-import styled from "styled-components";
-import { formatDecimal } from "@/lib/format-decimal";
+import { commaNumber } from "@/lib/commaNumber";
 import { BudgetRequest } from "@/models/budget-request";
-import { Pencil } from "lucide-react";
 import Link from "next/link";
-
-// Styled Components for the table
-const TableContainer = styled.div`
-	overflow-x: auto;
-`;
-
-const StyledTable = styled.table`
-	width: 100%;
-	border-collapse: collapse;
-`;
-
-const StyledTableHeader = styled.th`
-	background-color: #f7f7f7;
-	padding: 12px;
-	font-weight: bold;
-	text-align: left;
-	cursor: pointer;
-
-	&:hover {
-		background-color: #e5e5e5;
-	}
-`;
-
-const StyledTableRow = styled.tr`
-	border-bottom: 1px solid #ddd;
-
-	&:hover {
-		background-color: #f1f1f1;
-	}
-`;
-
-const StyledTableCell = styled.td`
-	text-align: center;
-	padding: 12px;
-`;
-
-const EditIcon = styled(Pencil)`
-	transition: color 0.2s;
-	cursor: pointer;
-
-	&:hover {
-		color: #0070f3;
-	}
-`;
-
-const SortArrow = styled.span`
-	margin-left: 5px;
-`;
-
-const BoldText = styled.span`
-	font-weight: bold;
-`;
+import { BoldText, EditIcon, SortArrow, StyledTable, StyledTableCell, StyledTableHeader, StyledTableRow, TableContainer, StatusCell } from "@/components/BudgetDataTable/BudgetTableStyle";
+import { formatDateInTimezone } from "@/lib/formatDate"; // Adjust import path as needed
 
 interface BudgetRequestDataTableProps {
 	items: BudgetRequest[];
@@ -96,6 +44,9 @@ const BudgetRequestDataTable: React.FC<BudgetRequestDataTableProps> = ({ items }
 						<StyledTableHeader onClick={() => handleSort("id")}>ID {sortColumn === "id" && <SortArrow>{sortDirection === "asc" ? "🔼" : "🔽"}</SortArrow>}</StyledTableHeader>
 						<StyledTableHeader onClick={() => handleSort("title")}>Title {sortColumn === "title" && <SortArrow>{sortDirection === "asc" ? "🔼" : "🔽"}</SortArrow>}</StyledTableHeader>
 						<StyledTableHeader onClick={() => handleSort("amount")}>Budget {sortColumn === "amount" && <SortArrow>{sortDirection === "asc" ? "🔼" : "🔽"}</SortArrow>}</StyledTableHeader>
+						<StyledTableHeader onClick={() => handleSort("updated_at")}>
+							Updated At {sortColumn === "updated_at" && <SortArrow>{sortDirection === "asc" ? "🔼" : "🔽"}</SortArrow>}
+						</StyledTableHeader>
 						<StyledTableHeader onClick={() => handleSort("status")}>Status {sortColumn === "status" && <SortArrow>{sortDirection === "asc" ? "🔼" : "🔽"}</SortArrow>}</StyledTableHeader>
 					</tr>
 				</thead>
@@ -111,8 +62,9 @@ const BudgetRequestDataTable: React.FC<BudgetRequestDataTableProps> = ({ items }
 							<StyledTableCell>
 								<BoldText>{request.title}</BoldText> x {request.quantity} Units
 							</StyledTableCell>
-							<StyledTableCell>{formatDecimal(request.amount)}</StyledTableCell>
-							<StyledTableCell>{request.status}</StyledTableCell>
+							<StyledTableCell>{commaNumber(request.amount)}</StyledTableCell>
+							<StyledTableCell>{formatDateInTimezone(request.updated_at)}</StyledTableCell>
+							<StatusCell status={request.status}>{request.status}</StatusCell>
 						</StyledTableRow>
 					))}
 				</tbody>

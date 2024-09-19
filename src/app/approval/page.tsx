@@ -9,15 +9,14 @@ const BudgetApprovalDataTable: React.FC = () => {
 	const { budgetRequests, refreshBudgetRequests } = useBudget();
 
 	useEffect(() => {
-		// Optionally fetch data only when the component mounts
 		refreshBudgetRequests();
-	}, [refreshBudgetRequests]); // Ensure this is called only once if needed
+	}, [refreshBudgetRequests]);
 
 	const handleApprove = async (id: number) => {
 		try {
 			await updateStatusBudget(id, { status: "APPROVED" });
 			alert("Budget request approved successfully!");
-			refreshBudgetRequests(); // Refresh the budget requests
+			refreshBudgetRequests();
 		} catch (error) {
 			console.error("Error approving budget request:", error);
 			alert("Failed to approve budget request.");
@@ -28,7 +27,7 @@ const BudgetApprovalDataTable: React.FC = () => {
 		try {
 			await updateStatusBudget(id, { status: "REJECTED" });
 			alert("Budget request rejected successfully!");
-			refreshBudgetRequests(); // Refresh the budget requests
+			refreshBudgetRequests();
 		} catch (error) {
 			console.error("Error rejecting budget request:", error);
 			alert("Failed to reject budget request.");
@@ -46,6 +45,7 @@ const BudgetApprovalDataTable: React.FC = () => {
 						<th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
 						<th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Budget</th>
 						<th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+						<th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Owner_ID</th>
 						<th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
 					</tr>
 				</thead>
@@ -53,11 +53,12 @@ const BudgetApprovalDataTable: React.FC = () => {
 					{pendingRequests.map((request) => (
 						<tr key={request.id}>
 							<td className="px-6 py-4 whitespace-nowrap text-center">{request.id}</td>
-							<td className="px-6 py-4 whitespace-nowrap">
+							<td className="px-6 py-4 whitespace-nowrap text-center">
 								<span className="font-bold">{request.title}</span> x {request.quantity} Units
 							</td>
-							<td className="px-6 py-4 whitespace-nowrap text-right">{formatDecimal(request.amount)}</td>
+							<td className="px-6 py-4 whitespace-nowrap text-center">{formatDecimal(request.amount)}</td>
 							<td className="px-6 py-4 whitespace-nowrap text-center">{request.status}</td>
+							<td className="px-6 py-4 whitespace-nowrap text-center">{request.owner_id}</td>
 							<td className="px-6 py-4 whitespace-nowrap text-center space-x-2">
 								{request.status === "PENDING" && (
 									<>

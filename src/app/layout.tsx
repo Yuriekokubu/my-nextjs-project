@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { BudgetProvider } from "@/context/BudgetContext";
 import { AuthProvider } from "@/context/AuthContext"; // Adjust the import path as necessary
-import Header from "@/components/Header";
+import Header from "@/components/Header/Header";
 import { ReactNode } from "react";
 
 export const metadata: Metadata = {

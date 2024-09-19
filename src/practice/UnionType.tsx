@@ -19,8 +19,4 @@ function MyButton({ color, children }: MyButtonProps) {
     return <button color={color}>{children}</button>;
 }
 
-function Label({ color }: { color: Color }) {
-    return <p color={color}>Label</p>;
-}
-
 export default Demo;

@@ -2,26 +2,26 @@
 
 import { useEffect, useState } from "react";
 import BudgetPanel from "@/components/Panel/BudgetPanel";
-import BudgetRequestDataTable from "@/components/BudgetRequestDataTable";
+import BudgetRequestDataTable from "@/components/BudgetDataTable/BudgetRequestDataTable";
 import { fetchBudgetItems } from "@/services/budget-item";
 import { useBudget } from "@/context/BudgetContext"; // Import the hook
 
 function Home() {
-	const { budgetRequests, setBudgetRequests } = useBudget(); // Use context hook
+	const { budgetRequests, setBudgetRequests } = useBudget();
 	const [error, setError] = useState<string | null>(null);
 
-	const loadItems = async () => {
-		try {
-			const items = await fetchBudgetItems();
-			setBudgetRequests(items); // Update context
-		} catch (err) {
-			setError("Failed to fetch budget items.");
-		}
-	};
-
 	useEffect(() => {
+		const loadItems = async () => {
+			try {
+				const items = await fetchBudgetItems();
+				setBudgetRequests(items);
+			} catch (err) {
+				setError("Failed to fetch budget items.");
+			}
+		};
+
 		loadItems();
-	}, [setBudgetRequests]); // Add setBudgetRequests to dependency array
+	}, [setBudgetRequests]);
 
 	return (
 		<div>

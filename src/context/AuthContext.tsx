@@ -13,40 +13,43 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-	const [username, setUsername] = useState<string | null>(null);
-	const [owner_id, setOwnerID] = useState<number | null>(null);
+	const getTokenFromLocalStorage = () => {
+		return localStorage.getItem("token");
+	};
+
+	const initialToken = getTokenFromLocalStorage();
+	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!initialToken);
+	const [username, setUsername] = useState<string | null>(localStorage.getItem("username"));
+	const [owner_id, setOwnerID] = useState<number | null>(localStorage.getItem("owner_id") ? Number(localStorage.getItem("owner_id")) : null);
 
 	useEffect(() => {
-		const checkAuthStatus = () => {
-			const cookies = document.cookie.split("; ");
-			const tokenCookie = cookies.find((cookie) => cookie.startsWith("token="));
-			if (tokenCookie) {
-				const token = tokenCookie.split("=")[1];
-				// Optionally, set username and owner_id from token if available
-				setIsAuthenticated(!!token);
-			} else {
-				setIsAuthenticated(false);
-				setUsername(null);
-				setOwnerID(null);
-			}
-		};
-
-		checkAuthStatus();
+		if (initialToken) {
+			setIsAuthenticated(true);
+		} else {
+			setIsAuthenticated(false);
+			setUsername(null);
+			setOwnerID(null);
+		}
 	}, []);
 
 	const login = (username: string, token: string, owner_id: number) => {
 		setIsAuthenticated(true);
 		setUsername(username);
 		setOwnerID(owner_id);
-		document.cookie = `token=Bearer ${token}; path=/; max-age=${2592000}`; // Set cookie with 1 month expiration
+		localStorage.setItem("token", token);
+		localStorage.setItem("username", username);
+		localStorage.setItem("owner_id", owner_id.toString());
+		document.cookie = `token=Bearer ${token}; path=/; max-age=${2592000}`;
 	};
 
 	const logout = () => {
 		setIsAuthenticated(false);
 		setUsername(null);
 		setOwnerID(null);
-		document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"; // Clear cookie
+		localStorage.removeItem("token"); 
+		localStorage.removeItem("username"); 
+		localStorage.removeItem("owner_id"); 
+		document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"; 
 	};
 
 	return <AuthContext.Provider value={{ isAuthenticated, username, owner_id, login, logout }}>{children}</AuthContext.Provider>;

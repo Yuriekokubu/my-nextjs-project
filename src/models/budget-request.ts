@@ -5,4 +5,5 @@ export interface BudgetRequest {
     quantity: number;
     status: "PENDING" | "APPROVED" | "REJECTED";
     owner_id: number
+    updated_at: string;
 }
