@@ -2,14 +2,32 @@ import { useState } from "react";
 import { commaNumber } from "@/lib/commaNumber";
 import { BudgetRequest } from "@/models/budget-request";
 import Link from "next/link";
-import { BoldText, EditIcon, SortArrow, StyledTable, StyledTableCell, StyledTableHeader, StyledTableRow, TableContainer, StatusCell } from "@/components/BudgetDataTable/BudgetTableStyle";
-import { formatDateInTimezone } from "@/lib/formatDate"; // Adjust import path as needed
+import {
+	BoldText,
+	EditIcon,
+	SortArrow,
+	StyledTable,
+	StyledTableCell,
+	FloatingDeleteButton,
+	StyledTableHeader,
+	StyledTableRow,
+	TableContainer,
+	StatusCell,
+	ButtonBackground,
+	CheckboxLabel,
+	Checkmark,
+	HiddenCheckbox,
+	StyledCheckbox,
+} from "@/components/BudgetDataTable/BudgetTableStyle";
+import { formatDateInTimezone } from "@/lib/formatDate";
 
 interface BudgetRequestDataTableProps {
 	items: BudgetRequest[];
+	onDeleteSelected: (selectedIds: number[]) => void;
 }
 
-const BudgetRequestDataTable: React.FC<BudgetRequestDataTableProps> = ({ items }) => {
+const BudgetRequestDataTable: React.FC<BudgetRequestDataTableProps> = ({ items, onDeleteSelected }) => {
+	const [selectedIds, setSelectedIds] = useState<number[]>([]);
 	const [sortColumn, setSortColumn] = useState<keyof BudgetRequest>("id");
 	const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
@@ -35,12 +53,39 @@ const BudgetRequestDataTable: React.FC<BudgetRequestDataTableProps> = ({ items }
 		return 0;
 	});
 
+	const handleSelect = (id: number) => {
+		setSelectedIds((prev) => (prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]));
+	};
+
+	const handleDelete = async () => {
+		try {
+			await onDeleteSelected(selectedIds);
+			setSelectedIds([]); // Clear selected after deletion
+			alert("Items deleted successfully!"); // Show success alert
+		} catch (error) {
+			console.error("Error deleting items:", error);
+			alert("Failed to delete items. Please try again."); // Show error alert
+		}
+	};
+
 	return (
 		<TableContainer>
 			<StyledTable>
 				<thead>
 					<tr>
-						<StyledTableHeader>{""}</StyledTableHeader>
+						<StyledTableHeader>
+							<CheckboxLabel>
+								<HiddenCheckbox
+									type="checkbox"
+									checked={selectedIds.length === items.length}
+									onChange={() => setSelectedIds(selectedIds.length === items.length ? [] : items.map((item) => item.id))}
+								/>
+								<StyledCheckbox checked={selectedIds.length === items.length}>
+									<Checkmark checked={selectedIds.length === items.length} />
+								</StyledCheckbox>
+							</CheckboxLabel>
+						</StyledTableHeader>
+						<StyledTableHeader></StyledTableHeader>
 						<StyledTableHeader onClick={() => handleSort("id")}>ID {sortColumn === "id" && <SortArrow>{sortDirection === "asc" ? "🔼" : "🔽"}</SortArrow>}</StyledTableHeader>
 						<StyledTableHeader onClick={() => handleSort("title")}>Title {sortColumn === "title" && <SortArrow>{sortDirection === "asc" ? "🔼" : "🔽"}</SortArrow>}</StyledTableHeader>
 						<StyledTableHeader onClick={() => handleSort("amount")}>Budget {sortColumn === "amount" && <SortArrow>{sortDirection === "asc" ? "🔼" : "🔽"}</SortArrow>}</StyledTableHeader>
@@ -53,6 +98,14 @@ const BudgetRequestDataTable: React.FC<BudgetRequestDataTableProps> = ({ items }
 				<tbody>
 					{sortedItems.map((request) => (
 						<StyledTableRow key={request.id}>
+							<StyledTableCell>
+								<CheckboxLabel>
+									<HiddenCheckbox type="checkbox" checked={selectedIds.includes(request.id)} onChange={() => handleSelect(request.id)} />
+									<StyledCheckbox checked={selectedIds.includes(request.id)}>
+										<Checkmark checked={selectedIds.includes(request.id)} />
+									</StyledCheckbox>
+								</CheckboxLabel>
+							</StyledTableCell>
 							<StyledTableCell>
 								<Link href={`/edit/${request.id}`} passHref>
 									<EditIcon />
@@ -69,6 +122,11 @@ const BudgetRequestDataTable: React.FC<BudgetRequestDataTableProps> = ({ items }
 					))}
 				</tbody>
 			</StyledTable>
+			{selectedIds.length > 0 && (
+				<ButtonBackground>
+					<FloatingDeleteButton onClick={handleDelete}>Delete Selected</FloatingDeleteButton>
+				</ButtonBackground>
+			)}
 		</TableContainer>
 	);
 };

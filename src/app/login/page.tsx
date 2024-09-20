@@ -3,8 +3,9 @@ import { api } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { FormEvent, ChangeEvent, useState } from "react";
-import { Container, Form, Title, Label, InputWrapper, Input, Button, Spinner, EyeIcon } from "@/app/login/style"; // Import styles from the new file
+import { Container, Form, Title, Label, InputWrapper, Input, Button, Spinner, EyeIcon, SignUpLink } from "@/app/login/style"; // Import styles from the new file
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
+import Link from "next/link"; // Import Next.js Link component
 
 function LoginPage() {
 	const [credential, setCredential] = useState({
@@ -70,6 +71,11 @@ function LoginPage() {
 					<Button type="submit" $isSubmitting={isSubmitting} disabled={isSubmitting}>
 						{isSubmitting ? <Spinner /> : "Login"}
 					</Button>
+				</div>
+				<div>
+					<SignUpLink>
+						Don't have an account? <Link href="/signup">Sign Up</Link>
+					</SignUpLink>{" "}
 				</div>
 			</Form>
 		</Container>

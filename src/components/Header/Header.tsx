@@ -14,6 +14,9 @@ const Header: React.FC = () => {
 					<Link href="/" passHref legacyBehavior>
 						<LogoLink>Budget App</LogoLink>
 					</Link>
+					<Link href="/entry" passHref legacyBehavior>
+						<LinkStyle>Entry</LinkStyle>
+					</Link>
 					<Link href="/add" passHref legacyBehavior>
 						<LinkStyle>Add</LinkStyle>
 					</Link>

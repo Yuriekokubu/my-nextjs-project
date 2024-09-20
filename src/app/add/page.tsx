@@ -1,10 +1,10 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { createBudgetItem } from "@/services/budget-item"; // Import the API function
+import { createBudgetItem } from "@/services/budget-item";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext"; // Import the Auth context
+import { useAuth } from "@/context/AuthContext";
 
 type FormData = {
 	title: string;
@@ -27,9 +27,8 @@ function AddBudgetRequest() {
 	});
 
 	const router = useRouter();
-	const { owner_id, isAuthenticated } = useAuth(); // Use Auth context
+	const { owner_id, isAuthenticated } = useAuth();
 
-	// Handle form submission
 	const onSubmit = async (data: FormData) => {
 		if (!isAuthenticated) {
 			alert("You must be logged in to add a budget request.");
@@ -46,11 +45,11 @@ function AddBudgetRequest() {
 				title: data.title,
 				quantity: Number(data.quantity),
 				amount: Number(data.amount),
-				owner_id: Number(owner_id), // Pass the owner_id from Auth context
+				owner_id: Number(owner_id),
 			});
 			alert("Budget request added successfully!");
-			reset(); // Reset form fields after success
-			router.push("/"); // Redirect to the entry page after success
+			reset();
+			router.push("/");
 		} catch (error) {
 			console.error("Error adding budget request:", error);
 			alert("Failed to add budget request. Please try again.");

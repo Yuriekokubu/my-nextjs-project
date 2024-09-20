@@ -90,3 +90,18 @@ export const EyeIcon = styled.div`
 	cursor: pointer;
 	color: #ccc;
 `;
+
+export const SignUpLink = styled.div`
+  margin-top: 20px;
+  text-align: center;
+  
+  a {
+    color: #0070f3;
+    text-decoration: none;
+    font-weight: bold;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;

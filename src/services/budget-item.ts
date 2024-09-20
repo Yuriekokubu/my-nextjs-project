@@ -1,5 +1,7 @@
 import { api } from "@/lib/api";
 import { BudgetRequest } from "@/models/budget-request";
+import { CreateBudgetItemRequest, CreateBudgetItemResponse, EditBudgetItemRequest, EditBudgetItemResponse, UpdateBudgetStatusRequest, UpdateBudgetStatusResponse } from "@/models/budget-item";
+
 
 export const fetchBudgetItems = async (): Promise<BudgetRequest[]> => {
   try {
@@ -12,17 +14,6 @@ export const fetchBudgetItems = async (): Promise<BudgetRequest[]> => {
   }
 };
 
-interface CreateBudgetItemRequest {
-  title: string;
-  quantity: number;
-  amount: number;
-  owner_id: number;
-}
-
-interface CreateBudgetItemResponse {
-  data: BudgetRequest;
-}
-
 export const createBudgetItem = async (body: CreateBudgetItemRequest) => {
   try {
     const response = await api.post<CreateBudgetItemResponse>("/items", body);
@@ -33,17 +24,6 @@ export const createBudgetItem = async (body: CreateBudgetItemRequest) => {
     throw error;
   }
 };
-
-interface EditBudgetItemRequest {
-  title?: string;
-  quantity?: number;
-  amount?: number;
-  owner_id?: number;
-}
-
-interface EditBudgetItemResponse {
-  data: BudgetRequest;
-}
 
 export const editBudgetItem = async (id: number, body: EditBudgetItemRequest) => {
   try {
@@ -56,15 +36,6 @@ export const editBudgetItem = async (id: number, body: EditBudgetItemRequest) =>
   }
 };
 
-// Updated function to use PATCH for updating the status of a budget item
-interface UpdateBudgetStatusRequest {
-  status: string;
-}
-
-interface UpdateBudgetStatusResponse {
-  data: BudgetRequest;
-}
-
 export const updateStatusBudget = async (id: number, body: UpdateBudgetStatusRequest) => {
   try {
     const response = await api.patch<UpdateBudgetStatusResponse>(`/items/${id}`, body);
@@ -73,5 +44,17 @@ export const updateStatusBudget = async (id: number, body: UpdateBudgetStatusReq
   } catch (error) {
     console.error(`Error updating status for budget item with ID ${id}:`, error);
     throw error;
+  }
+};
+
+export const deleteBudgetItems = async (ids: number[]) => {
+  try {
+    const response = await api.delete('/items/delete', {
+      data: { ids }, // Pass the IDs in the request body
+    });
+    return response.data; // Return the response data
+  } catch (error) {
+    console.error("Failed to delete budget items:", error);
+    throw error; // Rethrow the error for handling in the calling code
   }
 };
