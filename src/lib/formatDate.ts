@@ -1,9 +1,10 @@
-import { format, addHours } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz';
 
 export const formatDateInTimezone = (dateString: string): string => {
     const date = new Date(dateString);
-    const timezoneOffset = 7; // +7 hours
-    const localDate = addHours(date, timezoneOffset);
+    const timeZone = 'Asia/Bangkok';
 
-    return format(localDate, 'dd/MM/yyyy HH:mm:ss');
+    return formatInTimeZone(date, timeZone, 'dd/MM/yyyy HH:mm:ss');
 };
+
+
