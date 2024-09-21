@@ -4,8 +4,8 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { FormEvent, ChangeEvent, useState } from "react";
 import { Container, Form, Title, Label, InputWrapper, Input, Button, Spinner, EyeIcon, SignUpLink } from "@/app/login/style"; // Import styles from the new file
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
-import Link from "next/link"; // Import Next.js Link component
+import { FaEye, FaEyeSlash } from "react-icons/fa"; 
+import Link from "next/link"; 
 
 function LoginPage() {
 	const [credential, setCredential] = useState({
@@ -13,7 +13,7 @@ function LoginPage() {
 		password: "",
 	});
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [showPassword, setShowPassword] = useState(false); // New state for toggling password visibility
+	const [showPassword, setShowPassword] = useState(false);
 	const router = useRouter();
 	const { login } = useAuth();
 
@@ -58,14 +58,14 @@ function LoginPage() {
 					<Label htmlFor="password">Password</Label>
 					<InputWrapper>
 						<Input
-							type={showPassword ? "text" : "password"} // Toggle input type based on state
+							type={showPassword ? "text" : "password"} 
 							id="password"
 							name="password"
 							required
 							onChange={handleChange}
 						/>
 						<EyeIcon onClick={() => setShowPassword(!showPassword)}>
-							{showPassword ? <FaEyeSlash /> : <FaEye />} {/* Toggle eye icon */}
+							{showPassword ? <FaEyeSlash /> : <FaEye />} 
 						</EyeIcon>
 					</InputWrapper>
 					<Button type="submit" $isSubmitting={isSubmitting} disabled={isSubmitting}>

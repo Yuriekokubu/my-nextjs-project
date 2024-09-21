@@ -161,3 +161,17 @@ export const Checkmark = styled.span<{ checked: boolean }>`
   transform: translate(-50%, -50%);
   opacity: ${(props) => (props.checked ? 1 : 0)};
 `;
+
+export const SearchInput = styled.input`
+  margin-bottom: 10px;
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #ccc; /* Add border for better visibility */
+  border-radius: 4px; /* Rounded corners */
+  font-size: 16px; /* Adjust font size */
+
+  &:focus {
+    border-color: #0070f3; /* Change border color on focus */
+    outline: none; /* Remove default outline */
+  }
+`;
