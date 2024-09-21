@@ -18,7 +18,7 @@ const Panel = styled.div`
 `;
 
 function BudgetPanel({ items }: BudgetPanelProps) {
-	const total = 10_000;
+	const total = 100_000;
 	const usedBudget = items
 		.filter((request) => request.status === "APPROVED")
 		.map((request) => request.amount)
