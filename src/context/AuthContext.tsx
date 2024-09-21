@@ -14,7 +14,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 	const getTokenFromLocalStorage = () => {
-		return localStorage.getItem("token");
+		if (typeof window !== "undefined") {
+			return localStorage.getItem("token");
+		}
+		return null; 
 	};
 
 	const initialToken = getTokenFromLocalStorage();
@@ -46,10 +49,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 		setIsAuthenticated(false);
 		setUsername(null);
 		setOwnerID(null);
-		localStorage.removeItem("token"); 
-		localStorage.removeItem("username"); 
-		localStorage.removeItem("owner_id"); 
-		document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"; 
+		localStorage.removeItem("token");
+		localStorage.removeItem("username");
+		localStorage.removeItem("owner_id");
+		document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 	};
 
 	return <AuthContext.Provider value={{ isAuthenticated, username, owner_id, login, logout }}>{children}</AuthContext.Provider>;
